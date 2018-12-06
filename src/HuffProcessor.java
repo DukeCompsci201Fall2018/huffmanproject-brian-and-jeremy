@@ -60,11 +60,35 @@ public class HuffProcessor {
 	 */
 	public void decompress(BitInputStream in, BitOutputStream out){
 
+		int bits = in.readBits(BITS_PER_INT);
+		if(bits!= HUFF_TREE) {
+			throw new HuffException("illegal header starts with " + bits);
+		}
 		while (true){
 			int val = in.readBits(BITS_PER_WORD);
 			if (val == -1) break;
 			out.writeBits(BITS_PER_WORD, val);
 		}
 		out.close();
+	}
+	
+	private HuffNode readTreeHeader(BitInputStream in) {
+		int Onebit= in.readBits(1);
+		
+		
+		if(Onebit == -1 ) {
+			throw new HuffException("bit does not exist");
+		}
+		if(Onebit== 0) {
+			HuffNode left= readTreeHeader(in);
+			HuffNode right = readTreeHeader(in);
+			return new HuffNode(0, 0, left, right);
+		}
+		else {
+			int bit= in.readBits(BITS_PER_WORD+1);
+			//System.out.println(bit);
+			return new HuffNode(bit, 0, null, null);
+		}
+		
 	}
 }
