@@ -98,7 +98,7 @@ public class HuffProcessor {
 
 	private void codingHelper(HuffNode root, String path, String[] encodings) {
 		// TODO Auto-generated method stub
-		if (root.myWeight == 1) {
+		if (root.myRight == null && root.myLeft == null) {
 			encodings[root.myValue] = path;
 			return;
 		}
