@@ -82,36 +82,22 @@ public class HuffProcessor {
 	}
 
 	private void writeHeader(HuffNode root, BitOutputStream out) {
-		while (true) {
-			if (root.myWeight == 1) {
-				out.writeBits(BITS_PER_WORD+1, root.myValue);
-			}
-			else {
-				out.writeBits(BITS_PER_WORD+1, 0);
-				writeHeader(root.myLeft, out);
-				writeHeader(root.myRight, out);
-			}
+		if (root.myWeight == 1) {
+			out.writeBits(0,1);
 		}
-
+		else {
+			out.writeBits(BITS_PER_WORD+1, 0);
+			writeHeader(root.myLeft, out);
+			writeHeader(root.myRight, out);
+		}
 	}
 
-//	private void writeHeader(HuffNode root, BitOutputStream out) {
-//		if (root.myLeft != null || root.myRight != null ) {
-//			out.writeBits(1, 0);
-//			writeHeader(root.myLeft, out);
-//			writeHeader(root.myRight, out);
-//		}
-//		else {
-//			out.writeBits(1, 1);
-//			out.writeBits(BITS_PER_WORD + 1, root.myValue);
-//		}
-//
-//		private String[] makeCodingsFromTree(HuffNode root) {
-//			String[] encodings = new String[ALPH_SIZE + 1];
-//			codingHelper(root,"",encodings);
-//			return null;
-//		}
-//	}
+
+	private String[] makeCodingsFromTree(HuffNode root) {
+		String[] encodings = new String[ALPH_SIZE + 1];
+		codingHelper(root,"",encodings);
+		return null;
+	}
 
 	private void codingHelper(HuffNode root, String path, String[] encodings) {
 		// TODO Auto-generated method stub
@@ -130,7 +116,7 @@ public class HuffProcessor {
 		PriorityQueue<HuffNode> pq = new PriorityQueue<>();
 
 
-		for(int i = 0; i < counts.length; i++) {
+		for(int i = 0; counts[i] > 0; i++) {
 			if (counts[i] != 0) {
 				pq.add(new HuffNode(i,counts[i],null,null));
 			}
