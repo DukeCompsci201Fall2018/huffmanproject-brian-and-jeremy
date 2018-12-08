@@ -56,9 +56,6 @@ public class HuffProcessor {
 
 	private int[] readForCounts (BitInputStream in) {
 		int [] freq = new int[ALPH_SIZE + 1];
-		for(int i =0; i<freq.length; i++) {
-			freq[i]=0;
-		}
 		while (true) {
 			int b = in.readBits(BITS_PER_WORD);
 			if (b == -1) {
