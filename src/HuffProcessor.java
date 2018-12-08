@@ -56,16 +56,22 @@ public class HuffProcessor {
 
 	private int[] readForCounts (BitInputStream in) {
 		int [] freq = new int[ALPH_SIZE + 1];
+		for(int i =0; i<freq.length; i++) {
+			freq[i]=0;
+		}
 		while (true) {
 			int b = in.readBits(BITS_PER_WORD);
 			if (b == -1) {
 				freq[PSEUDO_EOF] = 1;
 				break;
 			}
+			else {
 			freq[b] = freq[b]+1;
+		}
 		}
 		return freq;
 	}
+		
 
 
 	
@@ -87,13 +93,14 @@ public class HuffProcessor {
 
 
 	private void writeHeader(HuffNode root, BitOutputStream out) {
-		if (root.myWeight == 1) {
-			out.writeBits(BITS_PER_WORD+1,root.myValue);
-		}
-		else {
+		if (root.myLeft!= null || root.myRight!=null) {
 			out.writeBits(1, 0);
 			writeHeader(root.myLeft, out);
 			writeHeader(root.myRight, out);
+		}
+		else {
+			out.writeBits(1, 1);
+			out.writeBits(BITS_PER_WORD+1,root.myValue);
 		}
 	}
 
@@ -121,10 +128,11 @@ public class HuffProcessor {
 	}
 
 	private HuffNode makeTreeFromCouts(int[] counts) {
+		System.out.print(counts);
 		PriorityQueue<HuffNode> pq = new PriorityQueue<>();
 
 
-		for(int i = 0; counts[i] > 0; i++) {
+		for(int i = 0; i<counts.length; i++) {
 			if (counts[i] != 0) {
 				pq.add(new HuffNode(i,counts[i],null,null));
 			}
