@@ -67,6 +67,8 @@ public class HuffProcessor {
 		return freq;
 	}
 
+
+	
 	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
 		if(myDebugLevel >= DEBUG_HIGH) {
 			System.out.print("here are %d the codings" + codings);
@@ -80,24 +82,30 @@ public class HuffProcessor {
 		String last = codings[PSEUDO_EOF];
 		out.writeBits(last.length(), Integer.parseInt(last, 2));
 	}
+	
+	
+
 
 	private void writeHeader(HuffNode root, BitOutputStream out) {
 		if (root.myWeight == 1) {
-			out.writeBits(0,1);
+			out.writeBits(BITS_PER_WORD+1,root.myValue);
 		}
 		else {
-			out.writeBits(BITS_PER_WORD+1, 0);
+			out.writeBits(1, 0);
 			writeHeader(root.myLeft, out);
 			writeHeader(root.myRight, out);
 		}
 	}
 
 
+	
+
 	private String[] makeCodingsFromTree(HuffNode root) {
 		String[] encodings = new String[ALPH_SIZE + 1];
 		codingHelper(root,"",encodings);
-		return null;
+		return encodings;
 	}
+
 
 	private void codingHelper(HuffNode root, String path, String[] encodings) {
 		// TODO Auto-generated method stub
@@ -199,3 +207,4 @@ public class HuffProcessor {
 
 	}
 }
+
